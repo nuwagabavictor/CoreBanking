@@ -49,7 +49,7 @@ dependencies {
 
             'io.github.resilience4j:resilience4j-spring-boot3',
             'org.apache.httpcomponents:httpcore',
-            fileTree('thirdparty') {
+            fileTree('thirdParty') {
                 include '*.jar'
             },
             )
