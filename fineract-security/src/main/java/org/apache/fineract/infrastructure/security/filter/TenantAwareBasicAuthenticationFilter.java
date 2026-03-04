@@ -43,7 +43,6 @@ import org.apache.fineract.infrastructure.core.serialization.ToApiJsonSerializer
 import org.apache.fineract.infrastructure.core.service.ThreadLocalContextUtil;
 import org.apache.fineract.infrastructure.security.data.PlatformRequestLog;
 import org.apache.fineract.infrastructure.security.exception.InvalidTenantIdentifierException;
-import org.apache.fineract.infrastructure.security.jwt.JwtUtil;
 import org.apache.fineract.infrastructure.security.service.AuthTenantDetailsService;
 import org.apache.fineract.infrastructure.security.service.TenantAwareJpaPlatformUserDetailsService;
 import org.apache.fineract.notification.service.UserNotificationService;
@@ -89,8 +88,8 @@ public class TenantAwareBasicAuthenticationFilter extends OncePerRequestFilter {
     private final UserNotificationService userNotificationService;
     private final AuthTenantDetailsService basicAuthTenantDetailsService;
     private final BusinessDateReadPlatformService businessDateReadPlatformService;
-    private final JwtUtil jwtUtil;
     private final TenantAwareJpaPlatformUserDetailsService userDetailsService;
+    private final JwtUtil jwtUtil;
 
     @Setter
     private RequestMatcher requestMatcher = AnyRequestMatcher.INSTANCE;

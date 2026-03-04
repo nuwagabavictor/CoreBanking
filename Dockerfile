@@ -39,15 +39,15 @@ RUN wget -q https://repo1.maven.org/maven2/mysql/mysql-connector-java/8.0.23/mys
 FROM azul/zulu-openjdk:17 as fineract
 
 # RUN apk add --no-cache fontconfig
-#COPY --from=builder /fineract/fineract-report/pentahoReports/*.properties /root/.mifosx/pentahoReports/
-#COPY --from=builder /fineract/fineract-report/pentahoReports/*.prpt /root/.mifosx/pentahoReports/
-#COPY --from=builder /fineract/fineract-report/pentahoReports/fonts/*.ttf /usr/local/share/fonts/
+COPY --from=builder /fineract/fineract-report/pentahoReports/*.properties /root/.mifosx/pentahoReports/
+COPY --from=builder /fineract/fineract-report/pentahoReports/*.prpt /root/.mifosx/pentahoReports/
+COPY --from=builder /fineract/fineract-report/pentahoReports/fonts/*.ttf /usr/local/share/fonts/
 COPY --from=builder /fineract/fineract-provider/build/libs/ /app
 COPY --from=builder /app/libs /app/libs
 
 ENV TZ="UTC"
 ENV FINERACT_HIKARI_DRIVER_SOURCE_CLASS_NAME="com.mysql.cj.jdbc.Driver"
-ENV FINERACT_HIKARI_JDBC_URL="jdbc:mysql://localhost:3306/fineract_tenants"
+ENV FINERACT_HIKARI_JDBC_URL="jdbc:mysql://localhost:3307/fineract_tenants"
 ENV FINERACT_HIKARI_USERNAME="root"
 ENV FINERACT_HIKARI_PASSWORD="mysql"
 ENV FINERACT_HIKARI_MINIMUM_IDLE="1"
@@ -69,13 +69,13 @@ ENV FINERACT_HIKARI_DS_PROPERTIES_MAINTAIN_TIME_STATS="false"
 ENV FINERACT_HIKARI_DS_PROPERTIES_LOG_SLOW_QUERIES="true"
 ENV FINERACT_HIKARI_DS_PROPERTIES_DUMP_QUERIES_IN_EXCEPTION="true"
 ENV FINERACT_DEFAULT_TENANTDB_HOSTNAME="localhost"
-ENV FINERACT_DEFAULT_TENANTDB_PORT="3306"
+ENV FINERACT_DEFAULT_TENANTDB_PORT="3307"
 ENV FINERACT_DEFAULT_TENANTDB_UID="root"
 ENV FINERACT_DEFAULT_TENANTDB_PWD="mysql"
 ENV FINERACT_DEFAULT_TENANTDB_TIMEZONE="Africa/Kampala"
-ENV FINERACT_DEFAULT_TENANTDB_IDENTIFIER="showroom"
-ENV FINERACT_DEFAULT_TENANTDB_NAME="fineract_showroom"
-ENV FINERACT_DEFAULT_TENANTDB_DESCRIPTION="Showroom "
+ENV FINERACT_DEFAULT_TENANTDB_IDENTIFIER="default"
+ENV FINERACT_DEFAULT_TENANTDB_NAME="fineract_default"
+ENV FINERACT_DEFAULT_TENANTDB_DESCRIPTION="Default"
 ENV FINERACT_SERVER_SSL_ENABLED="true"
 ENV FINERACT_SERVER_PORT="8443"
 
