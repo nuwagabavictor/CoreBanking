@@ -22,6 +22,8 @@ RUN apk update && apk add wget
 COPY . fineract
 WORKDIR /fineract
 
+RUN chmod +x gradlew
+
 
 RUN ./gradlew --no-daemon -q  -x compileTestJava -x test bootJar
 RUN mv /fineract/fineract-provider/build/libs/*.jar /fineract/fineract-provider/build/libs/fineract-provider.jar

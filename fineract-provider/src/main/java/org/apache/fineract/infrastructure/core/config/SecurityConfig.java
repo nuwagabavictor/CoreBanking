@@ -119,10 +119,12 @@ public class SecurityConfig {
     @Autowired
     private TenantAwareJpaPlatformUserDetailsService hy;
 
+    @Autowired
     private JwtUtil jwtUtil;
 
-
+    @Autowired
     private ProgressiveLoanModelCheckerFilter progressiveLoanModelCheckerFilter;
+
     @Autowired
     private PlatformUserDetailsChecker platformUserDetailsChecker;
 
