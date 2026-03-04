@@ -35,3 +35,6 @@ gradleExp/
 .java-version
 
 .windsurf/
+
+# allow gradle wrapper jar
+!gradle/wrapper/gradle-wrapper.jar
