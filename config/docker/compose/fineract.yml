@@ -18,8 +18,13 @@
 
 services:
   fineract:
+<<<<<<< HEAD
+    # user: "${FINERACT_USER}:${FINERACT_GROUP}"
+    image: fineract:1.10.1
+=======
     image: fineract:latest
     user: "${FINERACT_USER}:${FINERACT_GROUP}"
+>>>>>>> 8c187f9d17fb839f26fc888f34a64f7c1f57a802
     volumes:
       - ${PWD}/config/docker/logback/logback-override.xml:/app/logback-override.xml
       - ${PWD}/config/docker/aws/etc/credentials:/etc/aws/credentials:ro

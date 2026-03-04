@@ -43,7 +43,11 @@ import org.apache.fineract.infrastructure.core.data.EnumOptionData;
 import org.apache.fineract.infrastructure.core.serialization.ToApiJsonSerializer;
 import org.apache.fineract.infrastructure.security.constants.TwoFactorConstants;
 import org.apache.fineract.infrastructure.security.data.AuthenticatedUserData;
+<<<<<<< HEAD:fineract-provider/src/main/java/org/apache/fineract/infrastructure/security/api/AuthenticationApiResource.java
+import org.apache.fineract.infrastructure.security.jwt.JwtUtil;
+=======
 import org.apache.fineract.infrastructure.security.exception.PasswordResetRequiredException;
+>>>>>>> 8c187f9d17fb839f26fc888f34a64f7c1f57a802:fineract-security/src/main/java/org/apache/fineract/infrastructure/security/api/AuthenticationApiResource.java
 import org.apache.fineract.infrastructure.security.service.SpringSecurityPlatformSecurityContext;
 import org.apache.fineract.portfolio.client.service.ClientReadPlatformService;
 import org.apache.fineract.useradministration.data.RoleData;
@@ -79,6 +83,7 @@ public class AuthenticationApiResource {
     private final ToApiJsonSerializer<AuthenticatedUserData> apiJsonSerializerService;
     private final SpringSecurityPlatformSecurityContext springSecurityPlatformSecurityContext;
     private final ClientReadPlatformService clientReadPlatformService;
+    private final JwtUtil jwtUtil;
 
     @POST
     @Consumes({ MediaType.APPLICATION_JSON })
@@ -114,8 +119,8 @@ public class AuthenticationApiResource {
                 permissions.add(grantedAuthority.getAuthority());
             }
 
-            final byte[] base64EncodedAuthenticationKey = Base64.getEncoder()
-                    .encode((request.username + ":" + request.password).getBytes(StandardCharsets.UTF_8));
+//            final byte[] base64EncodedAuthenticationKey = Base64.getEncoder()
+//                    .encode((request.username + ":" + request.password).getBytes(StandardCharsets.UTF_8));
 
             final AppUser principal = (AppUser) authenticationCheck.getPrincipal();
             final Collection<RoleData> roles = new ArrayList<>();
@@ -123,6 +128,8 @@ public class AuthenticationApiResource {
             for (final Role role : userRoles) {
                 roles.add(role.toData());
             }
+
+            final String base64EncodedAuthenticationKey = jwtUtil.generateToken(principal);
 
             final Long officeId = principal.getOffice().getId();
             final String officeName = principal.getOffice().getName();
@@ -137,7 +144,7 @@ public class AuthenticationApiResource {
             Long userId = principal.getId();
             if (this.springSecurityPlatformSecurityContext.doesPasswordHasToBeRenewed(principal)) {
                 authenticatedUserData = new AuthenticatedUserData().setUsername(request.username).setUserId(userId)
-                        .setBase64EncodedAuthenticationKey(new String(base64EncodedAuthenticationKey, StandardCharsets.UTF_8))
+                        .setBase64EncodedAuthenticationKey(base64EncodedAuthenticationKey)
                         .setAuthenticated(true).setShouldRenewPassword(true).setTwoFactorAuthenticationRequired(isTwoFactorRequired);
                 throw new PasswordResetRequiredException(authenticatedUserData);
             } else {
@@ -146,7 +153,7 @@ public class AuthenticationApiResource {
                         .setOfficeName(officeName).setStaffId(staffId).setStaffDisplayName(staffDisplayName)
                         .setOrganisationalRole(organisationalRole).setRoles(roles).setPermissions(permissions).setUserId(principal.getId())
                         .setAuthenticated(true)
-                        .setBase64EncodedAuthenticationKey(new String(base64EncodedAuthenticationKey, StandardCharsets.UTF_8))
+                        .setBase64EncodedAuthenticationKey(base64EncodedAuthenticationKey)
                         .setTwoFactorAuthenticationRequired(isTwoFactorRequired)
                         .setClients(returnClientList ? clientReadPlatformService.retrieveUserClients(userId) : null);
 
