@@ -43,11 +43,8 @@ import org.apache.fineract.infrastructure.core.data.EnumOptionData;
 import org.apache.fineract.infrastructure.core.serialization.ToApiJsonSerializer;
 import org.apache.fineract.infrastructure.security.constants.TwoFactorConstants;
 import org.apache.fineract.infrastructure.security.data.AuthenticatedUserData;
-<<<<<<< HEAD:fineract-provider/src/main/java/org/apache/fineract/infrastructure/security/api/AuthenticationApiResource.java
-import org.apache.fineract.infrastructure.security.jwt.JwtUtil;
-=======
 import org.apache.fineract.infrastructure.security.exception.PasswordResetRequiredException;
->>>>>>> 8c187f9d17fb839f26fc888f34a64f7c1f57a802:fineract-security/src/main/java/org/apache/fineract/infrastructure/security/api/AuthenticationApiResource.java
+import org.apache.fineract.infrastructure.security.filter.JwtUtil;
 import org.apache.fineract.infrastructure.security.service.SpringSecurityPlatformSecurityContext;
 import org.apache.fineract.portfolio.client.service.ClientReadPlatformService;
 import org.apache.fineract.useradministration.data.RoleData;
