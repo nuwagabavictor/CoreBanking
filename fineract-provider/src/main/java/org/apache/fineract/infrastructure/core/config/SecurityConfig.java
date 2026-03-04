@@ -44,6 +44,8 @@ import org.apache.fineract.infrastructure.jobs.filter.ProgressiveLoanModelChecke
 import org.apache.fineract.infrastructure.security.data.PlatformRequestLog;
 import org.apache.fineract.infrastructure.security.filter.TenantAwareBasicAuthenticationFilter;
 import org.apache.fineract.infrastructure.security.filter.TwoFactorAuthenticationFilter;
+//import org.apache.fineract.infrastructure.security.jwt.JwtFilter;
+import org.apache.fineract.infrastructure.security.jwt.JwtUtil;
 import org.apache.fineract.infrastructure.security.service.AuthTenantDetailsService;
 import org.apache.fineract.infrastructure.security.service.PlatformUserDetailsChecker;
 import org.apache.fineract.infrastructure.security.service.TenantAwareJpaPlatformUserDetailsService;
@@ -65,11 +67,13 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.ExceptionTranslationFilter;
 import org.springframework.security.web.access.intercept.RequestAuthorizationContext;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.www.BasicAuthenticationEntryPoint;
 import org.springframework.security.web.context.SecurityContextHolderFilter;
 import org.springframework.security.web.servlet.util.matcher.PathPatternRequestMatcher;
@@ -116,9 +120,17 @@ public class SecurityConfig {
     @Autowired
     private IdempotencyStoreHelper idempotencyStoreHelper;
     @Autowired
+<<<<<<< HEAD
+    private TenantAwareJpaPlatformUserDetailsService hy;
+    @Autowired
+    private JwtUtil jwtUtil;
+
+
+=======
     private ProgressiveLoanModelCheckerFilter progressiveLoanModelCheckerFilter;
     @Autowired
     private PlatformUserDetailsChecker platformUserDetailsChecker;
+>>>>>>> 8c187f9d17fb839f26fc888f34a64f7c1f57a802
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -340,9 +352,12 @@ public class SecurityConfig {
                     .requestMatchers(API_MATCHER.matcher("/api/*/twofactor")).fullyAuthenticated()
                     .requestMatchers(API_MATCHER.matcher("/api/**"))
                     .access(allOf(authorizationManagers.toArray(new AuthorizationManager[0])));
-        }).httpBasic(hb -> hb.authenticationEntryPoint(basicAuthenticationEntryPoint())).csrf(AbstractHttpConfigurer::disable)
+        })
+                .httpBasic(hb -> hb.authenticationEntryPoint(basicAuthenticationEntryPoint()))
+                .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(smc -> smc.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .addFilterBefore(tenantAwareBasicAuthenticationFilter(), SecurityContextHolderFilter.class)
+//                .addFilterBefore(jwtAuthenticationFilter(), TenantAwareBasicAuthenticationFilter.class)
+                .addFilterBefore(tenantAwareBasicAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
                 .addFilterAfter(requestResponseFilter(), ExceptionTranslationFilter.class)
                 .addFilterAfter(correlationHeaderFilter(), RequestResponseFilter.class)
                 .addFilterAfter(fineractInstanceModeApiFilter(), CorrelationHeaderFilter.class);
@@ -410,11 +425,12 @@ public class SecurityConfig {
     public TenantAwareBasicAuthenticationFilter tenantAwareBasicAuthenticationFilter() throws Exception {
         TenantAwareBasicAuthenticationFilter filter = new TenantAwareBasicAuthenticationFilter(authenticationManagerBean(),
                 basicAuthenticationEntryPoint(), toApiJsonSerializer, configurationDomainService, cacheWritePlatformService,
-                userNotificationService, basicAuthTenantDetailsService, businessDateReadPlatformService);
+                userNotificationService, basicAuthTenantDetailsService, businessDateReadPlatformService, jwtUtil, userDetailsService);
 
         filter.setRequestMatcher(API_MATCHER.matcher("/api/**"));
         return filter;
     }
+
 
     @Bean
     public BasicAuthenticationEntryPoint basicAuthenticationEntryPoint() {
